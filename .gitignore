@@ -8,3 +8,4 @@ cloudflare.err.log
 cloudflare.out.log
 tunnel.err.log
 tunnel.out.log
+.wrangler/
