@@ -1,0 +1,3 @@
+ALTER TABLE levels ADD COLUMN module_name TEXT;
+ALTER TABLE levels ADD COLUMN module_index INTEGER;
+ALTER TABLE levels ADD COLUMN is_main INTEGER DEFAULT 0;

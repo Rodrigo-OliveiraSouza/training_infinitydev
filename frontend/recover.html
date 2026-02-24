@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Recuperar senha - training.infinity.dev</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <nav class="nav">
+        <a class="logo" href="/">training.infinity.dev</a>
+        <a class="button secondary" href="/login">Entrar</a>
+      </nav>
+
+      <section class="section">
+        <div class="card" style="max-width: 420px; margin: 0 auto;">
+          <h2>Recuperar senha</h2>
+          <p class="notice">Informe seu email para receber instrucoes.</p>
+          <form class="form" id="recoverForm">
+            <input class="input" type="email" name="email" placeholder="Email" required />
+            <button class="button" type="submit">Enviar</button>
+          </form>
+          <p id="recoverMessage" class="notice" style="display: none; margin-top: 12px;"></p>
+        </div>
+      </section>
+    </div>
+    <script type="module" src="/assets/recover.js"></script>
+  </body>
+</html>

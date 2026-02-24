@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fase - training.infinity.dev</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <nav class="nav">
+        <a class="logo" href="/">training.infinity.dev</a>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a class="button secondary" id="backToMap" href="#">Voltar ao mapa</a>
+          <button class="button secondary" id="logoutButton">Sair</button>
+        </div>
+      </nav>
+      <div id="levelTimer" class="floating-timer">00:00</div>
+
+      <section class="section layout">
+        <div class="grid" style="gap: 18px;">
+          <div class="card">
+            <h2 id="levelTitle">Carregando...</h2>
+            <div id="theory" class="markdown"></div>
+          </div>
+          <div class="card">
+            <h3>Exemplo</h3>
+            <div id="example" class="markdown"></div>
+          </div>
+          <div class="card">
+            <h3>Quiz rapido</h3>
+            <div id="quiz" class="quiz"></div>
+          </div>
+          <div class="card">
+            <h3>Desafio</h3>
+            <div class="challenge-tabs">
+              <button class="tab-button active" data-tab="prompt" type="button">Desafio</button>
+              <button class="tab-button" data-tab="expected" type="button">Valores esperados</button>
+            </div>
+            <div class="challenge-panel" id="challengePromptPanel">
+              <p id="challengePrompt"></p>
+              <div id="challengeConstraints" class="notice"></div>
+            </div>
+            <div class="challenge-panel is-hidden" id="challengeExpectedPanel">
+              <div id="challengeExpected" class="notice challenge-expected"></div>
+            </div>
+          </div>
+          <div class="card terminal">
+            <h3 id="terminalTitle">Terminal</h3>
+            <p id="terminalHint" class="notice"></p>
+            <textarea id="codeInput" class="code-input" spellcheck="false"></textarea>
+            <div style="display: flex; gap: 12px;">
+              <button class="button" id="runButton">Executar</button>
+              <button class="button secondary" id="stopButton" disabled>Parar</button>
+              <button class="button secondary" id="submitButton">Enviar desafio</button>
+              <button class="button" id="nextButton" disabled>Proxima fase</button>
+            </div>
+            <div id="feedback" class="notice"></div>
+            <div class="terminal-shell">
+              <div class="output terminal-output" id="output"></div>
+              <div class="terminal-input-row" id="terminalInputRow">
+                <span class="terminal-prompt">&gt;</span>
+                <input id="terminalInput" class="terminal-input" type="text" placeholder="Digite e pressione Enter" />
+                <button class="button secondary" id="terminalSendButton">Enviar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <aside class="sidebar">
+          <div class="card">
+            <h3>Regras da fase</h3>
+            <p class="notice">Os testes internos sao ocultos. Sua saida precisa bater exatamente com o esperado.</p>
+            <p class="notice">Tempo e contado desde a abertura desta fase.</p>
+          </div>
+          <div class="card">
+            <h3>Ranking da fase</h3>
+            <div id="levelRankInfo" class="notice">Carregando ranking...</div>
+            <div id="levelLeaderboard" class="leaderboard"></div>
+          </div>
+          <div class="card">
+            <h3>Ranking geral</h3>
+            <div id="globalRankInfo" class="notice">Carregando ranking...</div>
+            <div id="globalLeaderboard" class="leaderboard"></div>
+          </div>
+          <div class="card is-hidden" id="classLevelRankCard">
+            <h3>Ranking da fase (turma)</h3>
+            <div id="classLevelRankInfo" class="notice">Carregando ranking...</div>
+            <div id="classLevelLeaderboard" class="leaderboard"></div>
+          </div>
+          <div class="card is-hidden" id="classGlobalRankCard">
+            <h3>Ranking geral (turma)</h3>
+            <div id="classGlobalRankInfo" class="notice">Carregando ranking...</div>
+            <div id="classGlobalLeaderboard" class="leaderboard"></div>
+          </div>
+        </aside>
+      </section>
+    </div>
+    <script type="module" src="/assets/level.js"></script>
+  </body>
+</html>

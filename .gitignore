@@ -1,0 +1,10 @@
+﻿node_modules/
+backend/data/
+backend/tmp/
+backend/.env
+.env
+ops/deploy/.cloudflared-token.txt
+cloudflare.err.log
+cloudflare.out.log
+tunnel.err.log
+tunnel.out.log

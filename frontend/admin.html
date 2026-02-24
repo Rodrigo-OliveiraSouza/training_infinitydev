@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - training.infinity.dev</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <nav class="nav">
+        <a class="logo" href="/">training.infinity.dev</a>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a class="button secondary" href="/map/1">Mapa</a>
+          <button class="button secondary" id="logoutButton">Sair</button>
+        </div>
+      </nav>
+
+      <section class="section admin-layout">
+        <div class="card admin-panel">
+          <h2>Painel Admin</h2>
+          <p class="notice">Gerencie fases, quizzes e desafios.</p>
+          <label class="label">Linguagem</label>
+          <select class="input" id="adminLanguage"></select>
+          <div class="admin-levels" id="adminLevels"></div>
+        </div>
+
+        <div class="card admin-editor">
+          <h2 id="editorTitle">Editar fase</h2>
+          <div class="notice" id="adminStatus">Selecione uma fase para editar.</div>
+
+          <div class="admin-tabs">
+            <button class="button secondary" data-tab="tab-subject">Assunto</button>
+            <button class="button secondary" data-tab="tab-quiz">Quiz</button>
+            <button class="button secondary" data-tab="tab-challenge">Desafio</button>
+          </div>
+
+          <div class="admin-tab" id="tab-subject">
+            <div class="grid two">
+              <div class="form">
+                <label class="label">Titulo da fase</label>
+                <input class="input" id="levelTitleInput" />
+
+                <label class="label">Order (posicao)</label>
+                <input class="input" id="levelOrderInput" type="number" />
+
+                <label class="label">Assunto (module_name)</label>
+                <input class="input" id="levelModuleName" />
+
+                <label class="label">Indice do assunto (module_index)</label>
+                <input class="input" id="levelModuleIndex" type="number" />
+
+                <label class="label">Tipo da fase</label>
+                <select class="input" id="levelIsMain">
+                  <option value="1">Principal</option>
+                  <option value="0">Extra</option>
+                </select>
+              </div>
+
+              <div class="form">
+                <label class="label">Teoria (markdown)</label>
+                <textarea class="code-input" id="levelTheory"></textarea>
+
+                <label class="label">Exemplo (markdown)</label>
+                <textarea class="code-input" id="levelExample"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div class="admin-tab is-hidden" id="tab-quiz">
+            <div class="form">
+              <label class="label">Adicionar pergunta</label>
+              <input class="input" id="quizQuestion" placeholder="Pergunta" />
+              <input class="input" id="quizOptionA" placeholder="Opcao A" />
+              <input class="input" id="quizOptionB" placeholder="Opcao B" />
+              <input class="input" id="quizOptionC" placeholder="Opcao C" />
+              <input class="input" id="quizOptionD" placeholder="Opcao D" />
+              <input class="input" id="quizCorrect" type="number" min="0" max="3" placeholder="Indice correto (0-3)" />
+              <input class="input" id="quizExplain" placeholder="Explicacao" />
+              <button class="button" id="addQuiz">Adicionar pergunta</button>
+            </div>
+            <div class="admin-list" id="quizList"></div>
+          </div>
+
+          <div class="admin-tab is-hidden" id="tab-challenge">
+            <div class="form">
+              <label class="label">Prompt</label>
+              <textarea class="code-input" id="challengePrompt"></textarea>
+
+              <label class="label">Restricoes (uma por linha)</label>
+              <textarea class="code-input" id="challengeConstraints"></textarea>
+
+              <label class="label">Modo</label>
+              <select class="input" id="challengeMode">
+                <option value="code">code</option>
+                <option value="text">text</option>
+              </select>
+
+              <label class="label">Correction JSON</label>
+              <textarea class="code-input" id="correctionJson"></textarea>
+
+              <label class="label">Challenge JSON (opcional, sobrescreve prompt/restricoes)</label>
+              <textarea class="code-input" id="challengeJson"></textarea>
+            </div>
+          </div>
+
+          <div class="admin-actions">
+            <button class="button" id="saveLevel" disabled>Salvar alteracoes</button>
+            <button class="button secondary" id="newLevel">Nova fase</button>
+            <button class="button secondary" id="deleteLevel" disabled>Excluir fase</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="/assets/admin.js"></script>
+  </body>
+</html>

@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Minimapa - training.infinity.dev</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <nav class="nav">
+        <a class="logo" href="/">training.infinity.dev</a>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <select class="input" id="languageSelect" style="min-width: 160px;"></select>
+          <button class="button secondary" id="logoutButton">Sair</button>
+        </div>
+      </nav>
+
+      <section class="section map-layout">
+        <div class="map-main">
+          <div class="card map-header">
+            <h2 id="mapTitle">Mundo do Training.infinity.dev</h2>
+            <p id="mapSubtitle" class="notice"></p>
+          </div>
+          <div class="map-flow" id="minimap"></div>
+        </div>
+        <aside class="map-sidebar profile-panel">
+          <div class="card">
+            <div class="profile-tabs">
+              <button class="tab-button is-active" data-tab="profile">Perfil</button>
+              <button class="tab-button" data-tab="rewards">Recompensas</button>
+            </div>
+            <div id="profileTab" class="profile-tab">
+              <div class="profile-card">
+                <div class="profile-header">
+                  <div id="profileAvatar" class="avatar"></div>
+                  <div class="profile-meta">
+                    <strong id="profileName">Jogador</strong>
+                    <span id="profilePoints" class="profile-points">0 pontos de conquista</span>
+                  </div>
+                </div>
+                <p class="notice">Personalize seu perfil com recompensas conquistadas nas fases.</p>
+              </div>
+              <div class="card">
+                <h3>Turmas</h3>
+                <select class="input" id="classSelect"></select>
+                <div style="display: flex; gap: 8px; margin-top: 8px;">
+                  <button class="button secondary" id="openClassMap">Abrir mapa</button>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 12px;">
+                  <input class="input" id="joinClassCode" placeholder="Codigo da turma" />
+                  <button class="button" id="joinClassButton">Entrar</button>
+                </div>
+                <p id="classStatus" class="notice" style="margin-top: 8px;"></p>
+              </div>
+            </div>
+            <div id="rewardsTab" class="profile-tab is-hidden">
+              <h3>Recompensas</h3>
+              <p class="notice">Troque seus pontos por bordas, icones e selos.</p>
+              <div id="rewardsList" class="rewards-grid"></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Ranking geral</h3>
+            <p id="globalRankInfo" class="notice">Carregando ranking...</p>
+            <div id="globalLeaderboard" class="leaderboard"></div>
+          </div>
+          <div class="card is-hidden" id="classRankCard">
+            <h3>Ranking da turma</h3>
+            <p id="classRankInfo" class="notice">Carregando ranking...</p>
+            <div id="classLeaderboard" class="leaderboard"></div>
+          </div>
+        </aside>
+      </section>
+    </div>
+    <script type="module" src="/assets/map.js"></script>
+  </body>
+</html>
+
