@@ -26,6 +26,12 @@ cd ..
 
 Isso cria uma Task no boot (`TrainingInfinityDevBackend`) que executa `ops/deploy/run-backend.ps1`.
 
+Se sua conta nao tiver permissao de administrador, use o fallback por login de usuario:
+
+```powershell
+.\ops\deploy\install-user-startup.ps1 -StartNow
+```
+
 ## 3) Configurar Cloudflare (Tunnel + DNS)
 
 Crie um API Token no Cloudflare com estes escopos:
@@ -53,6 +59,8 @@ Execute como administrador:
 ```powershell
 .\ops\deploy\install-cloudflared-service.ps1
 ```
+
+Sem administrador, o `install-user-startup.ps1` ja inicia `run-cloudflared.ps1` automaticamente no login.
 
 ## 5) Verificar
 
