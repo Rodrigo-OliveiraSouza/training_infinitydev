@@ -112,6 +112,16 @@ function isLevelUnlocked(levelId, userId) {
       return { allowed: false, reason: 'Class access required', level };
     }
   }
+
+  const ownProgress = db
+    .prepare(
+      'SELECT completed_at FROM user_level_progress WHERE user_id = ? AND level_id = ?'
+    )
+    .get(userId, levelId);
+  if (ownProgress && ownProgress.completed_at) {
+    return { allowed: true, level };
+  }
+
   if (level.order_index === 1) {
     return { allowed: true, level };
   }

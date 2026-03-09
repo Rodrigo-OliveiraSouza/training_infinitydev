@@ -39,7 +39,7 @@ router.post('/register', (req, res) => {
 
   const user = db
     .prepare(
-      'SELECT id, username, email, primary_language_id, role, reward_points, profile_border, profile_icon, profile_badge, intro_seen FROM users WHERE id = ?'
+      'SELECT id, username, email, full_name, document_id, birth_date, primary_language_id, role, reward_points, single_reset_coupons, profile_border, profile_icon, profile_badge, intro_seen FROM users WHERE id = ?'
     )
     .get(info.lastInsertRowid);
 
@@ -80,9 +80,13 @@ router.post('/login', (req, res) => {
       id: user.id,
       username: user.username,
       email: user.email,
+      full_name: user.full_name || null,
+      document_id: user.document_id || null,
+      birth_date: user.birth_date || null,
       primary_language_id: user.primary_language_id,
       role: user.role || 'user',
       reward_points: user.reward_points || 0,
+      single_reset_coupons: user.single_reset_coupons || 0,
       profile_border: user.profile_border || null,
       profile_icon: user.profile_icon || null,
       profile_badge: user.profile_badge || null,
@@ -108,7 +112,7 @@ router.get('/me', requireAuth, (req, res) => {
   const db = getDb();
   const user = db
     .prepare(
-      'SELECT id, username, email, primary_language_id, role, reward_points, profile_border, profile_icon, profile_badge, intro_seen FROM users WHERE id = ?'
+      'SELECT id, username, email, full_name, document_id, birth_date, primary_language_id, role, reward_points, single_reset_coupons, profile_border, profile_icon, profile_badge, intro_seen FROM users WHERE id = ?'
     )
     .get(req.user.id);
   return res.json({ user });
@@ -130,9 +134,38 @@ router.patch('/me/language', requireAuth, (req, res) => {
   );
   const user = db
     .prepare(
-      'SELECT id, username, email, primary_language_id, reward_points, profile_border, profile_icon, profile_badge, intro_seen FROM users WHERE id = ?'
+      'SELECT id, username, email, full_name, document_id, birth_date, primary_language_id, role, reward_points, single_reset_coupons, profile_border, profile_icon, profile_badge, intro_seen FROM users WHERE id = ?'
     )
     .get(req.user.id);
+  return res.json({ user });
+});
+
+router.patch('/me/profile', requireAuth, (req, res) => {
+  const db = getDb();
+  const payload = req.body || {};
+  const fullName = String(payload.full_name || '').trim();
+  const documentId = String(payload.document_id || '').trim();
+  const birthDate = String(payload.birth_date || '').trim();
+
+  if (fullName && fullName.length < 5) {
+    return res.status(400).json({ error: 'Nome completo muito curto' });
+  }
+  if (birthDate && !/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) {
+    return res.status(400).json({ error: 'Data de nascimento invalida' });
+  }
+
+  db.prepare(
+    `UPDATE users
+     SET full_name = ?, document_id = ?, birth_date = ?, updated_at = datetime('now')
+     WHERE id = ?`
+  ).run(fullName || null, documentId || null, birthDate || null, req.user.id);
+
+  const user = db
+    .prepare(
+      'SELECT id, username, email, full_name, document_id, birth_date, primary_language_id, role, reward_points, single_reset_coupons, profile_border, profile_icon, profile_badge, intro_seen FROM users WHERE id = ?'
+    )
+    .get(req.user.id);
+
   return res.json({ user });
 });
 
@@ -143,7 +176,7 @@ router.patch('/me/intro', requireAuth, (req, res) => {
   );
   const user = db
     .prepare(
-      'SELECT id, username, email, primary_language_id, reward_points, profile_border, profile_icon, profile_badge, intro_seen FROM users WHERE id = ?'
+      'SELECT id, username, email, full_name, document_id, birth_date, primary_language_id, role, reward_points, single_reset_coupons, profile_border, profile_icon, profile_badge, intro_seen FROM users WHERE id = ?'
     )
     .get(req.user.id);
   return res.json({ user });

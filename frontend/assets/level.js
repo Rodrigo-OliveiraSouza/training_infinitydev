@@ -6,6 +6,10 @@ const example = document.getElementById('example');
 const quiz = document.getElementById('quiz');
 const challengePrompt = document.getElementById('challengePrompt');
 const challengeConstraints = document.getElementById('challengeConstraints');
+const challengeDifficultyTag = document.getElementById('challengeDifficultyTag');
+const challengeRewardTag = document.getElementById('challengeRewardTag');
+const challengeHint = document.getElementById('challengeHint');
+const challengeExamples = document.getElementById('challengeExamples');
 const challengeExpected = document.getElementById('challengeExpected');
 const challengeExpectedPanel = document.getElementById('challengeExpectedPanel');
 const challengePromptPanel = document.getElementById('challengePromptPanel');
@@ -23,6 +27,8 @@ const terminalHint = document.getElementById('terminalHint');
 const terminalInputRow = document.getElementById('terminalInputRow');
 const terminalInput = document.getElementById('terminalInput');
 const terminalSendButton = document.getElementById('terminalSendButton');
+const resetCouponInfo = document.getElementById('resetCouponInfo');
+const resetLevelButton = document.getElementById('resetLevelButton');
 let levelTimer = document.getElementById('levelTimer');
 const levelLeaderboard = document.getElementById('levelLeaderboard');
 const levelRankInfo = document.getElementById('levelRankInfo');
@@ -39,6 +45,7 @@ let sessionId = null;
 let levelData = null;
 let nextLevelId = null;
 let isTextMode = false;
+let currentUser = null;
 
 let terminalSocket = null;
 let socketReady = false;
@@ -200,6 +207,61 @@ function renderChallengeExpected(challenge) {
   }
 }
 
+function renderVisibleExamples(challenge) {
+  if (!challengeExamples) return;
+  challengeExamples.innerHTML = '';
+  const examples = Array.isArray(challenge.visibleExamples)
+    ? challenge.visibleExamples
+    : Array.isArray(challenge.examples)
+      ? challenge.examples
+      : [];
+
+  if (!examples.length) {
+    return;
+  }
+
+  examples.forEach((example, index) => {
+    const card = document.createElement('div');
+    card.className = 'challenge-example-card';
+    const title = document.createElement('strong');
+    title.textContent = example.title || `Exemplo ${index + 1}`;
+    card.appendChild(title);
+
+    if (example.input) {
+      const inputWrap = document.createElement('div');
+      const inputTag = document.createElement('span');
+      inputTag.className = 'tag';
+      inputTag.textContent = 'Entrada';
+      const inputPre = document.createElement('pre');
+      inputPre.textContent = example.input;
+      inputWrap.appendChild(inputTag);
+      inputWrap.appendChild(inputPre);
+      card.appendChild(inputWrap);
+    }
+
+    if (example.output) {
+      const outputWrap = document.createElement('div');
+      const outputTag = document.createElement('span');
+      outputTag.className = 'tag';
+      outputTag.textContent = 'Saida';
+      const outputPre = document.createElement('pre');
+      outputPre.textContent = example.output;
+      outputWrap.appendChild(outputTag);
+      outputWrap.appendChild(outputPre);
+      card.appendChild(outputWrap);
+    }
+
+    if (example.explanation) {
+      const explanation = document.createElement('p');
+      explanation.className = 'notice';
+      explanation.textContent = example.explanation;
+      card.appendChild(explanation);
+    }
+
+    challengeExamples.appendChild(card);
+  });
+}
+
 function renderLeaderboard(container, rows) {
   if (!container) return;
   container.innerHTML = '';
@@ -210,10 +272,7 @@ function renderLeaderboard(container, rows) {
   rows.forEach((row, index) => {
     const item = document.createElement('div');
     item.className = 'leaderboard-item';
-    const timeValue =
-      row.best_time_ms !== undefined && row.best_time_ms !== null
-        ? row.best_time_ms
-        : row.total_time_ms;
+    const hasAverage = row.avg_time_ms !== undefined;
     const userWrap = document.createElement('span');
     userWrap.className = 'leaderboard-user';
     const avatar = document.createElement('span');
@@ -235,7 +294,11 @@ function renderLeaderboard(container, rows) {
     userWrap.appendChild(avatar);
     userWrap.appendChild(label);
     const timeEl = document.createElement('span');
-    timeEl.textContent = formatDuration(timeValue);
+    if (hasAverage) {
+      timeEl.textContent = `${row.completed || 0} q | media ${formatDuration(row.avg_time_ms)}`;
+    } else {
+      timeEl.textContent = formatDuration(row.best_time_ms);
+    }
     item.appendChild(userWrap);
     item.appendChild(timeEl);
     container.appendChild(item);
@@ -262,7 +325,8 @@ async function loadGlobalLeaderboard() {
     const data = await api.leaderboardGlobal();
     renderLeaderboard(globalLeaderboard, data.rows);
     if (data.userRank) {
-      globalRankInfo.textContent = `Sua posicao: #${data.userRank} (${data.userStats.completed} fases concluidas)`;
+      globalRankInfo.textContent =
+        `Sua posicao: #${data.userRank} (${data.userStats.completed} questoes | media ${formatDuration(data.userStats.avg_time_ms)})`;
     } else {
       globalRankInfo.textContent = 'Sem progresso ainda.';
     }
@@ -294,7 +358,8 @@ async function loadClassGlobalLeaderboard(classId, languageId) {
     const data = await api.classLeaderboardGlobal(classId, languageId);
     renderLeaderboard(classGlobalLeaderboard, data.rows);
     if (data.userRank) {
-      classGlobalRankInfo.textContent = `Sua posicao: #${data.userRank} (${data.userStats.completed} fases concluidas)`;
+      classGlobalRankInfo.textContent =
+        `Sua posicao: #${data.userRank} (${data.userStats.completed} questoes | media ${formatDuration(data.userStats.avg_time_ms)})`;
     } else {
       classGlobalRankInfo.textContent = 'Sem progresso na turma ainda.';
     }
@@ -316,6 +381,16 @@ async function loadNextLevelInfo(languageId, orderIndex) {
 function setFeedback(message, type = 'notice') {
   feedback.textContent = message || '';
   feedback.className = type === 'error' ? 'notice error' : type === 'success' ? 'notice success' : 'notice';
+}
+
+function updateResetCouponUi() {
+  if (!resetCouponInfo || !resetLevelButton) return;
+  const coupons = Number(currentUser?.single_reset_coupons || 0);
+  resetCouponInfo.textContent =
+    coupons > 0
+      ? `Voce tem ${coupons} cupom(ns) para limpar o historico desta questao.`
+      : 'Sem cupons de reset. Troque pontos no mapa para liberar essa opcao.';
+  resetLevelButton.disabled = coupons <= 0 || !levelData;
 }
 
 function appendOutput(text) {
@@ -470,12 +545,13 @@ function sendInputLine() {
 
 async function init() {
   const levelId = getLevelIdFromPath();
-  const user = await requireAuth();
-  if (!user) return;
+  currentUser = await requireAuth();
+  if (!currentUser) return;
 
-  sessionStorageKey = getSessionKey(user.id, levelId);
+  sessionStorageKey = getSessionKey(currentUser.id, levelId);
   const levelResponse = await api.level(levelId);
   levelData = levelResponse.level;
+  updateResetCouponUi();
 
   levelTitle.textContent = `${levelData.order_index}. ${levelData.title}`;
   theory.innerHTML = renderMarkdown(levelData.theory_md);
@@ -483,11 +559,25 @@ async function init() {
   renderQuiz(levelData.quiz || []);
 
   challengePrompt.textContent = levelData.challenge.prompt;
+  if (challengeDifficultyTag) {
+    challengeDifficultyTag.textContent = `dificuldade: ${levelData.challenge.difficulty || 'normal'}`;
+  }
+  if (challengeRewardTag) {
+    const rewardLabel = levelData.challenge.rewardLabel || levelData.challenge.rewardKey || '';
+    challengeRewardTag.textContent = rewardLabel ? `recompensa: ${rewardLabel}` : '';
+    challengeRewardTag.classList.toggle('is-hidden', !rewardLabel);
+  }
   if (levelData.challenge.constraints && levelData.challenge.constraints.length) {
     challengeConstraints.textContent = levelData.challenge.constraints.join(' ');
   } else {
     challengeConstraints.textContent = 'Sem restricoes adicionais.';
   }
+  if (challengeHint) {
+    const hint = levelData.challenge.hint || '';
+    challengeHint.textContent = hint ? `Dica: ${hint}` : '';
+    challengeHint.classList.toggle('is-hidden', !hint);
+  }
+  renderVisibleExamples(levelData.challenge);
   renderChallengeExpected(levelData.challenge);
   if (challengeTabButtons.length) {
     challengeTabButtons.forEach((button) => {
@@ -593,10 +683,19 @@ submitButton.addEventListener('click', async () => {
       output.textContent = '';
     }
     if (result.result.passed) {
+      currentUser = {
+        ...currentUser,
+        reward_points: result.result.userPoints,
+        single_reset_coupons: result.result.userCoupons
+      };
+      updateResetCouponUi();
       const elapsedMs = Number(result.result.elapsedMs) || 0;
       const rewardPoints = Number(result.result.rewardPoints || 0);
       const rewardInfo = rewardPoints > 0 ? ` +${rewardPoints} pts` : '';
-      setFeedback(`Aprovado! Tempo: ${formatTimer(elapsedMs)}${rewardInfo}`, 'success');
+      const rewardItemInfo = result.result.rewardItem?.name
+        ? ` | recompensa: ${result.result.rewardItem.name}`
+        : '';
+      setFeedback(`Aprovado! Tempo: ${formatTimer(elapsedMs)}${rewardInfo}${rewardItemInfo}`, 'success');
       nextButton.disabled = !nextLevelId;
       stopTimer();
       syncTimerElapsed(elapsedMs);
@@ -640,3 +739,28 @@ window.addEventListener('beforeunload', () => {
 
 attachLogout();
 init();
+
+if (resetLevelButton) {
+  resetLevelButton.addEventListener('click', async () => {
+    if (!levelData || !currentUser) return;
+    const confirmed = window.confirm(
+      `Deseja consumir 1 cupom para limpar o historico da questao "${levelData.title}"?`
+    );
+    if (!confirmed) return;
+
+    resetLevelButton.disabled = true;
+    try {
+      const result = await api.resetOwnLevelProgress(levelData.id);
+      currentUser = { ...currentUser, ...result.user };
+      clearStoredSession();
+      updateResetCouponUi();
+      setFeedback('Historico removido. A fase sera recarregada.', 'success');
+      window.setTimeout(() => {
+        window.location.reload();
+      }, 500);
+    } catch (err) {
+      updateResetCouponUi();
+      setFeedback(err.message, 'error');
+    }
+  });
+}

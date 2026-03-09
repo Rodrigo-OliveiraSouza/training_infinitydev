@@ -14,6 +14,7 @@ const languageSelect = document.getElementById('languageSelect');
 const profileAvatar = document.getElementById('profileAvatar');
 const profileName = document.getElementById('profileName');
 const profilePoints = document.getElementById('profilePoints');
+const profileCoupons = document.getElementById('profileCoupons');
 const rewardsList = document.getElementById('rewardsList');
 const profileTabButtons = document.querySelectorAll('.profile-tabs .tab-button');
 const profileTab = document.getElementById('profileTab');
@@ -81,10 +82,7 @@ function renderLeaderboard(container, rows) {
   rows.forEach((row, index) => {
     const item = document.createElement('div');
     item.className = 'leaderboard-item';
-    const timeValue =
-      row.best_time_ms !== undefined && row.best_time_ms !== null
-        ? row.best_time_ms
-        : row.total_time_ms;
+    const hasAverage = row.avg_time_ms !== undefined;
     const userWrap = document.createElement('span');
     userWrap.className = 'leaderboard-user';
     const avatar = document.createElement('span');
@@ -94,7 +92,11 @@ function renderLeaderboard(container, rows) {
     userWrap.appendChild(avatar);
     userWrap.appendChild(label);
     const timeEl = document.createElement('span');
-    timeEl.textContent = formatDuration(timeValue);
+    if (hasAverage) {
+      timeEl.textContent = `${row.completed || 0} q | media ${formatDuration(row.avg_time_ms)}`;
+    } else {
+      timeEl.textContent = formatDuration(row.best_time_ms);
+    }
     item.appendChild(userWrap);
     item.appendChild(timeEl);
     container.appendChild(item);
@@ -109,6 +111,10 @@ function renderProfile(user) {
   if (profilePoints) {
     const points = Number(user.reward_points || 0);
     profilePoints.textContent = `${points} pontos de conquista`;
+  }
+  if (profileCoupons) {
+    const coupons = Number(user.single_reset_coupons || 0);
+    profileCoupons.textContent = `${coupons} cupons de reset`;
   }
   renderAvatar(profileAvatar, user);
 }
@@ -128,21 +134,57 @@ function renderRewards(items, user) {
     const info = document.createElement('div');
     info.className = 'reward-info';
     const preview = document.createElement('span');
-    const previewUser = {
-      username: user.username,
-      profile_icon: item.type === 'icon' ? item.value : user.profile_icon,
-      profile_border: item.type === 'border' ? item.value : user.profile_border,
-      profile_badge: item.type === 'badge' ? item.value : user.profile_badge
-    };
-    renderAvatar(preview, previewUser);
+    if (item.type === 'coupon') {
+      preview.className = 'reward-preview-chip';
+      preview.textContent = 'RESET';
+    } else {
+      const previewUser = {
+        username: user.username,
+        profile_icon: item.type === 'icon' ? item.value : user.profile_icon,
+        profile_border: item.type === 'border' ? item.value : user.profile_border,
+        profile_badge: item.type === 'badge' ? item.value : user.profile_badge
+      };
+      renderAvatar(preview, previewUser);
+    }
     const meta = document.createElement('div');
-    meta.innerHTML = `<strong>${item.name}</strong><div class="reward-cost">${item.cost} pts</div>`;
+    const quantity = Number(item.quantity || 0);
+    const rarity = item.rarity || 'common';
+    meta.innerHTML = item.type === 'coupon'
+      ? `<strong>${item.name}</strong><div class="reward-cost">${item.cost} pts | ${rarity} | Saldo: ${quantity}</div>`
+      : `<strong>${item.name}</strong><div class="reward-cost">${item.cost} pts | ${rarity}</div>`;
     info.appendChild(preview);
     info.appendChild(meta);
 
     const actions = document.createElement('div');
     actions.className = 'reward-actions';
     const owned = Number(item.owned) === 1;
+    if (item.type === 'coupon') {
+      const button = document.createElement('button');
+      button.className = 'button secondary';
+      button.textContent = points >= item.cost ? 'Trocar' : 'Pontos insuf.';
+      button.disabled = points < item.cost;
+      button.addEventListener('click', async () => {
+        try {
+          const result = await api.rewardsPurchase(item.key);
+          currentUser = { ...currentUser, ...result.user };
+          rewardsCache = rewardsCache.map((reward) =>
+            reward.key === item.key
+              ? { ...reward, owned: 1, quantity: Number(reward.quantity || 0) + 1 }
+              : reward
+          );
+          renderProfile(currentUser);
+          renderRewards(rewardsCache, currentUser);
+        } catch (err) {
+          window.alert(err.message);
+        }
+      });
+      actions.appendChild(button);
+      row.appendChild(info);
+      row.appendChild(actions);
+      rewardsList.appendChild(row);
+      return;
+    }
+
     const equipped =
       (item.type === 'icon' && user.profile_icon === item.value) ||
       (item.type === 'border' && user.profile_border === item.value) ||
@@ -363,7 +405,8 @@ async function loadGlobalLeaderboard() {
     const data = await api.leaderboardGlobal();
     renderLeaderboard(globalLeaderboard, data.rows);
     if (data.userRank) {
-      globalRankInfo.textContent = `Sua posicao: #${data.userRank} (${data.userStats.completed} fases concluidas)`;
+      globalRankInfo.textContent =
+        `Sua posicao: #${data.userRank} (${data.userStats.completed} questoes | media ${formatDuration(data.userStats.avg_time_ms)})`;
     } else {
       globalRankInfo.textContent = 'Sem progresso ainda.';
     }
@@ -383,7 +426,8 @@ async function loadClassLeaderboard() {
     const data = await api.classLeaderboardGlobal(currentClassId, currentLanguageId);
     renderLeaderboard(classLeaderboard, data.rows);
     if (data.userRank) {
-      classRankInfo.textContent = `Sua posicao: #${data.userRank} (${data.userStats.completed} fases concluidas)`;
+      classRankInfo.textContent =
+        `Sua posicao: #${data.userRank} (${data.userStats.completed} questoes | media ${formatDuration(data.userStats.avg_time_ms)})`;
     } else {
       classRankInfo.textContent = 'Sem progresso na turma ainda.';
     }

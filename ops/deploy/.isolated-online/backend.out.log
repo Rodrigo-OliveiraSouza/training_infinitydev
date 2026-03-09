@@ -1,0 +1,9 @@
+[2026-03-09T15:32:52] Subindo app isolada na porta 8300...
+Server running on http://localhost:8300
+[0mGET /api/health [32m200[0m 1.995 ms - 83[0m
+[0mGET /certificates [32m200[0m 3.921 ms - 2300[0m
+[0mGET /api/certificates [33m401[0m 0.754 ms - 25[0m
+[0mGET /admin/certificates [32m200[0m 0.922 ms - 4285[0m
+[0mGET /certificates [32m200[0m 0.714 ms - 2300[0m
+[0mGET /api/certificates [33m401[0m 0.193 ms - 25[0m
+[0mGET /admin/certificates [32m200[0m 0.650 ms - 4285[0m

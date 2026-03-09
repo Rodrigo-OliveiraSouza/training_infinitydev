@@ -33,6 +33,12 @@ const quizList = document.getElementById('quizList');
 
 const challengePrompt = document.getElementById('challengePrompt');
 const challengeConstraints = document.getElementById('challengeConstraints');
+const challengeDifficulty = document.getElementById('challengeDifficulty');
+const challengeHint = document.getElementById('challengeHint');
+const challengeExamples = document.getElementById('challengeExamples');
+const challengeRewardKey = document.getElementById('challengeRewardKey');
+const challengeRewardLabel = document.getElementById('challengeRewardLabel');
+const challengeRewardPoints = document.getElementById('challengeRewardPoints');
 const challengeMode = document.getElementById('challengeMode');
 const correctionJson = document.getElementById('correctionJson');
 const challengeJson = document.getElementById('challengeJson');
@@ -105,6 +111,12 @@ function selectLevel(level) {
   challengeConstraints.value = Array.isArray(challenge.constraints)
     ? challenge.constraints.join('\n')
     : '';
+  challengeDifficulty.value = challenge.difficulty || 'normal';
+  challengeHint.value = challenge.hint || '';
+  challengeExamples.value = JSON.stringify(challenge.visibleExamples || [], null, 2);
+  challengeRewardKey.value = challenge.rewardKey || '';
+  challengeRewardLabel.value = challenge.rewardLabel || '';
+  challengeRewardPoints.value = challenge.rewardPoints || '';
   challengeMode.value = challenge.mode || 'code';
 
   correctionJson.value = JSON.stringify(level.correction || {}, null, 2);
@@ -188,6 +200,12 @@ function resetEditor() {
   renderQuizList();
   challengePrompt.value = '';
   challengeConstraints.value = '';
+  challengeDifficulty.value = 'normal';
+  challengeHint.value = '';
+  challengeExamples.value = '[]';
+  challengeRewardKey.value = '';
+  challengeRewardLabel.value = '';
+  challengeRewardPoints.value = '';
   challengeMode.value = 'code';
   correctionJson.value = '{}';
   challengeJson.value = '';
@@ -216,7 +234,11 @@ saveLevel.addEventListener('click', async () => {
     quiz: quizItems,
     challenge: {
       prompt: challengePrompt.value,
-      constraints: challengeConstraints.value.split('\n').filter((line) => line.trim().length)
+      constraints: challengeConstraints.value.split('\n').filter((line) => line.trim().length),
+      difficulty: challengeDifficulty.value,
+      hint: challengeHint.value.trim(),
+      rewardKey: challengeRewardKey.value.trim(),
+      rewardLabel: challengeRewardLabel.value.trim()
     },
     correction: {}
   };
@@ -236,6 +258,20 @@ saveLevel.addEventListener('click', async () => {
       return;
     }
   } else {
+    try {
+      payload.challenge.visibleExamples = JSON.parse(challengeExamples.value || '[]');
+    } catch (err) {
+      setStatus('Exemplos visiveis JSON invalido.', 'error');
+      return;
+    }
+    const rewardPoints = Number(challengeRewardPoints.value);
+    if (challengeRewardPoints.value.trim()) {
+      if (Number.isNaN(rewardPoints) || rewardPoints < 0) {
+        setStatus('Pontos da conclusao invalidos.', 'error');
+        return;
+      }
+      payload.challenge.rewardPoints = rewardPoints;
+    }
     payload.challenge.mode = challengeMode.value;
   }
 

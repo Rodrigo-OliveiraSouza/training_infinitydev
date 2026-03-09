@@ -48,43 +48,49 @@ function numberPattern(value) {
   return `${intPart}[\\.,]${fracPart}(?:0+)?`;
 }
 
+function wrapNumberPattern(pattern) {
+  if (!pattern) return null;
+  return `(?:^|[^\\d+\\-.,])(?:${pattern})(?=$|[^\\d.,])`;
+}
+
+function computedNumberRegex(value) {
+  const pattern = numberPattern(value);
+  return wrapNumberPattern(pattern);
+}
+
 function resolveComputedRegex(rule, input) {
   const lines = getInputLines(input);
   if (rule === 'int_plus') {
     const base = parseInt(lines[0] || '', 10);
     if (Number.isNaN(base)) return null;
     const expected = base + 1;
-    return `\\b${expected}\\b`;
+    return computedNumberRegex(expected);
   }
   if (rule === 'int_plus_2') {
     const base = parseInt(lines[0] || '', 10);
     if (Number.isNaN(base)) return null;
     const expected = base + 2;
-    return `\\b${expected}\\b`;
+    return computedNumberRegex(expected);
   }
   if (rule === 'int_double') {
     const base = parseInt(lines[0] || '', 10);
     if (Number.isNaN(base)) return null;
     const expected = base * 2;
-    return `\\b${expected}\\b`;
+    return computedNumberRegex(expected);
   }
   if (rule === 'float_half') {
     const raw = (lines[0] || '').replace(',', '.');
     const value = parseFloat(raw);
     if (Number.isNaN(value)) return null;
     const half = value / 2;
-    const pattern = numberPattern(half);
-    if (!pattern) return null;
-    return `\\b${pattern}\\b`;
+    return computedNumberRegex(half);
   }
   if (rule === 'float_square') {
     const raw = (lines[0] || '').replace(',', '.');
     const value = parseFloat(raw);
     if (Number.isNaN(value)) return null;
     const squared = value * value;
-    const pattern = numberPattern(squared);
-    if (!pattern) return null;
-    return `\\b${pattern}\\b`;
+    return computedNumberRegex(squared);
   }
   if (rule === 'echo_line') {
     if (!lines[0]) return null;
@@ -95,8 +101,15 @@ function resolveComputedRegex(rule, input) {
 
 function compareRegex(actual, expectedRegex) {
   const a = normalizeOutput(actual);
-  const re = new RegExp(expectedRegex, 'm');
-  return { passed: re.test(a), actual: a, expectedRegex };
+  if (!expectedRegex) {
+    return { passed: false, actual: a, expectedRegex };
+  }
+  try {
+    const re = new RegExp(expectedRegex, 'm');
+    return { passed: re.test(a), actual: a, expectedRegex };
+  } catch (err) {
+    return { passed: false, actual: a, expectedRegex };
+  }
 }
 
 function compareSimilarity(actual, expected, threshold) {

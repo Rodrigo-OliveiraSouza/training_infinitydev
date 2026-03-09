@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Certificados - training.infinity.dev</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <nav class="nav">
+        <a class="logo" href="/">training.infinity.dev</a>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a class="button secondary" href="/admin">Voltar ao admin</a>
+          <button class="button secondary" id="logoutButton">Sair</button>
+        </div>
+      </nav>
+
+      <section class="section admin-layout">
+        <div class="card admin-panel">
+          <h2>Certificados</h2>
+          <p class="notice">Cadastre uma certificacao por carga horaria e configure a atividade final.</p>
+          <div class="admin-levels" id="certificateTrackList"></div>
+        </div>
+
+        <div class="card admin-editor">
+          <h2 id="certificateEditorTitle">Novo certificado</h2>
+          <div class="notice" id="certificateAdminStatus">Preencha os dados e salve.</div>
+
+          <div class="grid two">
+            <div class="form">
+              <label class="label">Titulo do certificado</label>
+              <input class="input" id="certificateTitleInput" placeholder="Banco de Dados - 40h" />
+
+              <label class="label">Slug</label>
+              <input class="input" id="certificateSlugInput" placeholder="banco-de-dados-40h" />
+
+              <label class="label">Carga horaria</label>
+              <input class="input" id="certificateHoursInput" type="number" min="1" />
+
+              <label class="label">Preco (centavos)</label>
+              <input class="input" id="certificatePriceInput" type="number" min="0" />
+
+              <label class="label">Cidade / local</label>
+              <input class="input" id="certificateLocationInput" placeholder="Cruz das Almas" />
+
+              <label class="label">Marca d'agua da previa</label>
+              <input class="input" id="certificateWatermarkInput" placeholder="PREVIA NAO VALIDA" />
+
+              <label class="label">Ativo</label>
+              <select class="input" id="certificateActiveInput">
+                <option value="1">Sim</option>
+                <option value="0">Nao</option>
+              </select>
+            </div>
+
+            <div class="form">
+              <label class="label">Descricao</label>
+              <textarea class="code-input" id="certificateDescriptionInput"></textarea>
+
+              <label class="label">Titulo da atividade final</label>
+              <input class="input" id="certificateFinalTitleInput" placeholder="Projeto integrador final" />
+
+              <label class="label">Instrucoes da atividade final</label>
+              <textarea class="code-input" id="certificateFinalInstructionsInput"></textarea>
+            </div>
+          </div>
+
+          <div class="grid two">
+            <div class="form">
+              <label class="label">Conteudo programatico JSON</label>
+              <textarea class="code-input" id="certificateProgramInput" placeholder='[{"title":"Modulo 1","subtitle":"Fundamentos","items":["Topico A","Topico B"]}]'></textarea>
+            </div>
+            <div class="form">
+              <label class="label">Assinaturas JSON</label>
+              <textarea class="code-input" id="certificateSignersInput" placeholder='[{"signedBy":"Rodrigo Silva","printedName":"Rodrigo Silva","role":"Fundador e CEO"}]'></textarea>
+            </div>
+          </div>
+
+          <div class="admin-actions">
+            <button class="button" id="saveCertificateButton" type="button">Salvar certificado</button>
+            <button class="button secondary" id="newCertificateButton" type="button">Novo</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="card">
+          <h2>Pagamentos pendentes / emitidos</h2>
+          <p class="notice" id="certificateOrdersStatus">Carregando pedidos...</p>
+          <div class="certificate-orders-list" id="certificateOrdersList"></div>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="/assets/admin-certificates.js"></script>
+  </body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certificado - Infinity Dev</title>
+    <link rel="stylesheet" href="/assets/certificate.css" />
+  </head>
+  <body class="certificate-body">
+    <header class="certificate-toolbar">
+      <a class="certificate-toolbar__brand" href="/">Infinity Dev</a>
+      <button class="certificate-toolbar__button" id="printCertificate">Imprimir / Salvar PDF</button>
+    </header>
+
+    <main class="certificate-stack">
+      <section class="certificate-sheet certificate-sheet--front">
+        <div class="certificate-sheet__paper"></div>
+        <div class="certificate-shape certificate-shape--striped"></div>
+        <div class="certificate-shape certificate-shape--dotted"></div>
+        <div class="certificate-shape certificate-shape--outline"></div>
+
+        <aside class="certificate-ribbon">
+          <span>Certificado</span>
+        </aside>
+
+        <header class="certificate-brand">
+          <div class="certificate-brand__mark">∞</div>
+          <div class="certificate-brand__copy">
+            <strong>Infinity Dev</strong>
+            <span>Plataforma Educacional</span>
+          </div>
+        </header>
+
+        <div class="certificate-kicker">Certificado de conclusao</div>
+        <h1 class="certificate-name" data-field="participantName"></h1>
+
+        <p class="certificate-summary" id="certificateSummary"></p>
+
+        <div class="certificate-meta-card">
+          <div>
+            <span class="certificate-meta-card__label">ID</span>
+            <strong data-field="certificateId"></strong>
+          </div>
+          <div>
+            <span class="certificate-meta-card__label">Emissao</span>
+            <strong data-field="issueDate"></strong>
+          </div>
+        </div>
+
+        <p class="certificate-location" id="certificateLocation"></p>
+
+        <section class="certificate-signatures" id="certificateSignatures"></section>
+
+        <footer class="certificate-front-footer">
+          <div class="certificate-seal">Infinity Dev</div>
+          <div class="certificate-seal">Direcao Academica</div>
+          <div class="certificate-seal">Validacao Digital</div>
+        </footer>
+      </section>
+
+      <section class="certificate-sheet certificate-sheet--back">
+        <div class="certificate-shape certificate-shape--striped certificate-shape--back-top"></div>
+        <div class="certificate-shape certificate-shape--dotted certificate-shape--back-bottom"></div>
+
+        <header class="certificate-back-header">
+          <div class="certificate-qr" id="certificateQr">
+            <div class="certificate-qr__finder certificate-qr__finder--tl"></div>
+            <div class="certificate-qr__finder certificate-qr__finder--tr"></div>
+            <div class="certificate-qr__finder certificate-qr__finder--bl"></div>
+            <span>QR</span>
+          </div>
+
+          <div class="certificate-participant">
+            <h2>Informacoes do participante</h2>
+            <div class="certificate-participant__grid" id="participantGrid"></div>
+            <p class="certificate-participant__note" id="certificateValidationCopy"></p>
+          </div>
+        </header>
+
+        <section class="certificate-program">
+          <div class="certificate-program__header">Conteudo programatico</div>
+          <div class="certificate-program__grid" id="programGrid"></div>
+        </section>
+
+        <footer class="certificate-back-footer">
+          <div class="certificate-back-footer__brand">
+            <div class="certificate-brand__mark certificate-brand__mark--light">∞</div>
+            <div class="certificate-brand__copy certificate-brand__copy--light">
+              <strong>Infinity Dev</strong>
+              <span>Plataforma Educacional</span>
+            </div>
+          </div>
+        </footer>
+      </section>
+    </main>
+
+    <script type="module" src="/assets/certificate.js"></script>
+  </body>
+</html>

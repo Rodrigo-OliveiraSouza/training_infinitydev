@@ -11,6 +11,7 @@
       <nav class="nav">
         <a class="logo" href="/">training.infinity.dev</a>
         <div style="display: flex; gap: 12px; align-items: center;">
+          <a class="button secondary" href="/admin/certificates">Certificados</a>
           <a class="button secondary" href="/map/1">Mapa</a>
           <button class="button secondary" id="logoutButton">Sair</button>
         </div>
@@ -90,6 +91,28 @@
               <label class="label">Restricoes (uma por linha)</label>
               <textarea class="code-input" id="challengeConstraints"></textarea>
 
+              <label class="label">Dificuldade</label>
+              <select class="input" id="challengeDifficulty">
+                <option value="normal">Normal</option>
+                <option value="advanced">Avancado</option>
+                <option value="extreme">Extremo</option>
+              </select>
+
+              <label class="label">Dica opcional</label>
+              <textarea class="code-input" id="challengeHint"></textarea>
+
+              <label class="label">Exemplos visiveis JSON</label>
+              <textarea class="code-input" id="challengeExamples" placeholder='[{"title":"Caso 1","input":"2\n3","output":"5","explanation":"Soma basica"}]'></textarea>
+
+              <label class="label">Reward key (opcional)</label>
+              <input class="input" id="challengeRewardKey" placeholder="badge-legend" />
+
+              <label class="label">Reward label (opcional)</label>
+              <input class="input" id="challengeRewardLabel" placeholder="Selo Lendario" />
+
+              <label class="label">Pontos da conclusao (opcional)</label>
+              <input class="input" id="challengeRewardPoints" type="number" min="0" placeholder="30" />
+
               <label class="label">Modo</label>
               <select class="input" id="challengeMode">
                 <option value="code">code</option>
@@ -101,6 +124,7 @@
 
               <label class="label">Challenge JSON (opcional, sobrescreve prompt/restricoes)</label>
               <textarea class="code-input" id="challengeJson"></textarea>
+              <p class="notice">Para desafios complexos use `correction.type = "tests"`, `passThreshold` e `challenge.tests` no JSON.</p>
             </div>
           </div>
 
@@ -108,6 +132,89 @@
             <button class="button" id="saveLevel" disabled>Salvar alteracoes</button>
             <button class="button secondary" id="newLevel">Nova fase</button>
             <button class="button secondary" id="deleteLevel" disabled>Excluir fase</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="card admin-users-card">
+          <div class="admin-users-header">
+            <div>
+              <h2>Gerenciar usuarios</h2>
+              <p class="notice">Resete todo o historico de um usuario ou limpe apenas uma questao especifica.</p>
+            </div>
+            <div class="admin-users-search">
+              <input class="input" id="adminUserSearch" placeholder="Buscar por usuario ou email" />
+              <button class="button secondary" id="adminUserSearchButton" type="button">Buscar</button>
+            </div>
+          </div>
+
+          <div class="admin-users-layout">
+            <div class="admin-users-panel">
+              <div class="notice" id="adminUsersStatus">Carregando usuarios...</div>
+              <div class="admin-user-list" id="adminUsersList"></div>
+            </div>
+
+            <div class="admin-user-editor">
+              <h3 id="adminUserTitle">Selecione um usuario</h3>
+              <div class="notice" id="adminUserStatus">Escolha um usuario para ver as questoes e o historico.</div>
+
+              <div class="admin-user-form">
+                <div class="grid two">
+                  <div class="form">
+                    <label class="label">Usuario</label>
+                    <input class="input" id="adminUserEditUsername" disabled />
+
+                    <label class="label">Email</label>
+                    <input class="input" id="adminUserEditEmail" type="email" disabled />
+
+                    <label class="label">Perfil</label>
+                    <select class="input" id="adminUserEditRole" disabled>
+                      <option value="user">Aluno</option>
+                      <option value="teacher">Professor</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+
+                  <div class="form">
+                    <label class="label">Linguagem principal</label>
+                    <select class="input" id="adminUserEditLanguage" disabled>
+                      <option value="">Sem linguagem</option>
+                    </select>
+
+                    <label class="label">Pontos</label>
+                    <input class="input" id="adminUserEditPoints" type="number" min="0" disabled />
+
+                    <label class="label">Cupons de reset</label>
+                    <input class="input" id="adminUserEditCoupons" type="number" min="0" disabled />
+                  </div>
+                </div>
+
+                <div class="form">
+                  <label class="label">Nova senha (opcional)</label>
+                  <input class="input" id="adminUserEditPassword" type="password" placeholder="Deixe em branco para manter" disabled />
+                </div>
+
+                <div class="admin-user-form-actions">
+                  <button class="button" id="adminUserSaveButton" type="button" disabled>Salvar usuario</button>
+                </div>
+              </div>
+
+              <div class="admin-user-toolbar">
+                <select class="input" id="adminUserLanguageFilter">
+                  <option value="">Todas as linguagens</option>
+                </select>
+                <button class="button secondary" id="adminUserRefreshButton" type="button" disabled>
+                  Atualizar
+                </button>
+                <button class="button" id="adminResetAllButton" type="button" disabled>
+                  Resetar tudo do usuario
+                </button>
+              </div>
+
+              <div class="admin-user-summary" id="adminUserSummary"></div>
+              <div class="admin-list" id="adminUserLevels"></div>
+            </div>
           </div>
         </div>
       </section>

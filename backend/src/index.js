@@ -18,6 +18,8 @@ const rewardsRoutes = require('./routes/rewards');
 const classRoutes = require('./routes/classes');
 const teacherRoutes = require('./routes/teacher');
 const healthRoutes = require('./routes/health');
+const certificateRoutes = require('./routes/certificates');
+const adminCertificateRoutes = require('./routes/admin-certificates');
 
 async function start() {
   await migrate();
@@ -40,6 +42,8 @@ async function start() {
   app.use('/api/rewards', rewardsRoutes);
   app.use('/api/classes', classRoutes);
   app.use('/api/teacher', teacherRoutes);
+  app.use('/api/certificates', certificateRoutes);
+  app.use('/api/admin/certificates', adminCertificateRoutes);
 
   const frontendDir = path.join(__dirname, '..', '..', 'frontend');
   app.use(express.static(frontendDir));
@@ -59,7 +63,11 @@ async function start() {
   app.get('/map/class/:classId', sendPage('map.html'));
   app.get('/level/:id', sendPage('level.html'));
   app.get('/admin', sendPage('admin.html'));
+  app.get('/admin/certificates', sendPage('admin-certificates.html'));
   app.get('/teacher', sendPage('teacher.html'));
+  app.get('/certificate', sendPage('certificate.html'));
+  app.get('/certificado', sendPage('certificate.html'));
+  app.get('/certificates', sendPage('certificates.html'));
 
   app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });

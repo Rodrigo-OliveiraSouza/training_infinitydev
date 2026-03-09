@@ -38,8 +38,14 @@
               <button class="tab-button" data-tab="expected" type="button">Valores esperados</button>
             </div>
             <div class="challenge-panel" id="challengePromptPanel">
+              <div class="challenge-meta-row">
+                <span id="challengeDifficultyTag" class="tag">normal</span>
+                <span id="challengeRewardTag" class="tag is-hidden"></span>
+              </div>
               <p id="challengePrompt"></p>
               <div id="challengeConstraints" class="notice"></div>
+              <div id="challengeHint" class="notice is-hidden"></div>
+              <div id="challengeExamples" class="challenge-examples"></div>
             </div>
             <div class="challenge-panel is-hidden" id="challengeExpectedPanel">
               <div id="challengeExpected" class="notice challenge-expected"></div>
@@ -71,6 +77,13 @@
             <h3>Regras da fase</h3>
             <p class="notice">Os testes internos sao ocultos. Sua saida precisa bater exatamente com o esperado.</p>
             <p class="notice">Tempo e contado desde a abertura desta fase.</p>
+          </div>
+          <div class="card">
+            <h3>Reset da questao</h3>
+            <p id="resetCouponInfo" class="notice">Carregando cupons...</p>
+            <button class="button secondary" id="resetLevelButton" type="button" disabled>
+              Usar cupom nesta questao
+            </button>
           </div>
           <div class="card">
             <h3>Ranking da fase</h3>

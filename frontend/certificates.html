@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Certificados - training.infinity.dev</title>
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <nav class="nav">
+        <a class="logo" href="/">training.infinity.dev</a>
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <a class="button secondary" href="/map/1">Mapa</a>
+          <button class="button secondary" id="logoutButton">Sair</button>
+        </div>
+      </nav>
+
+      <section class="section grid two">
+        <div class="card">
+          <h2>Dados para emissao</h2>
+          <p class="notice">Esses dados entram automaticamente no certificado final. A previa mascara parte deles.</p>
+          <div class="form">
+            <label class="label">Nome completo</label>
+            <input class="input" id="profileFullName" />
+
+            <label class="label">Documento</label>
+            <input class="input" id="profileDocument" />
+
+            <label class="label">Data de nascimento</label>
+            <input class="input" id="profileBirthDate" type="date" />
+
+            <button class="button" id="saveProfileButton" type="button">Salvar dados</button>
+            <p class="notice" id="certificatesProfileStatus">Preencha seus dados antes da emissao final.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Como funciona</h2>
+          <div class="notice certificate-howto">
+            1. Envie a atividade final cadastrada pelo admin.
+            2. O sistema libera uma previa com marca d'agua e dados incompletos.
+            3. Escolha Pix ou cartao para gerar o pedido.
+            4. Depois da confirmacao do pagamento, o certificado final fica liberado.
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="card">
+          <h2>Minhas certificacoes</h2>
+          <p class="notice" id="certificatesStatus">Carregando certificados...</p>
+          <div class="certificate-track-grid" id="certificateTrackGrid"></div>
+        </div>
+      </section>
+    </div>
+
+    <script type="module" src="/assets/certificates.js"></script>
+  </body>
+</html>

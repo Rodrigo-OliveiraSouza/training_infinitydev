@@ -1,0 +1,7 @@
+tunnel: b6b77611-c1ac-49ab-b08b-1b98e1e4c5c4
+credentials-file: C:\Users\rodri\.cloudflared\b6b77611-c1ac-49ab-b08b-1b98e1e4c5c4.json
+
+ingress:
+  - hostname: training.infinity.dev.br
+    service: http://127.0.0.1:8300
+  - service: http_status:404

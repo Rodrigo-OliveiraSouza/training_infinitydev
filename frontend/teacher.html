@@ -111,6 +111,28 @@
               <label class="label">Restricoes (uma por linha)</label>
               <textarea class="code-input" id="challengeConstraints"></textarea>
 
+              <label class="label">Dificuldade</label>
+              <select class="input" id="challengeDifficulty">
+                <option value="normal">Normal</option>
+                <option value="advanced">Avancado</option>
+                <option value="extreme">Extremo</option>
+              </select>
+
+              <label class="label">Dica opcional</label>
+              <textarea class="code-input" id="challengeHint"></textarea>
+
+              <label class="label">Exemplos visiveis JSON</label>
+              <textarea class="code-input" id="challengeExamples" placeholder='[{"title":"Caso 1","input":"2\n3","output":"5","explanation":"Soma basica"}]'></textarea>
+
+              <label class="label">Reward key (opcional)</label>
+              <input class="input" id="challengeRewardKey" placeholder="badge-legend" />
+
+              <label class="label">Reward label (opcional)</label>
+              <input class="input" id="challengeRewardLabel" placeholder="Selo Lendario" />
+
+              <label class="label">Pontos da conclusao (opcional)</label>
+              <input class="input" id="challengeRewardPoints" type="number" min="0" placeholder="30" />
+
               <label class="label">Modo</label>
               <select class="input" id="challengeMode">
                 <option value="code">code</option>
@@ -122,6 +144,7 @@
 
               <label class="label">Challenge JSON (opcional, sobrescreve prompt/restricoes)</label>
               <textarea class="code-input" id="challengeJson"></textarea>
+              <p class="notice">Para desafios complexos use `correction.type = "tests"`, `passThreshold` e `challenge.tests` no JSON.</p>
             </div>
           </div>
 
